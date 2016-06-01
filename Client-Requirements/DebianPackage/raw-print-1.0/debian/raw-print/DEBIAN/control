@@ -1,0 +1,10 @@
+Package: raw-print
+Version: 1.0
+Architecture: all
+Maintainer: Tanmay, <tanmay_muley@yahoo.com>
+Installed-Size: 48
+Depends: python (>= 2.6)
+Section: python
+Priority: optional
+Description: Test package
+ This package for accepting raw reciept and label print jobs.

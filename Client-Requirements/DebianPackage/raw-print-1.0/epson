@@ -1,0 +1,40 @@
+#! /usr/bin/python
+import sys
+from escpos import *
+
+if sys.argv[1]=="usb":
+    vendor_id = sys.argv[2][0:4]
+    dev_id = sys.argv[2][5:10]
+    vendor_id = int(vendor_id,16)
+    dev_id = int(dev_id,16)
+    Printer = printer.Usb(vendor_id,dev_id)
+elif sys.argv[1]=="network":
+    Printer = printer.Network(sys.argv[2])
+Printer.set('center')
+f = open('/usr/Shop_chain/Shop_name.txt', 'r')
+name = f.read()
+item_list = []
+n = 0
+m = 3
+loop = len(sys.argv)/2-1
+total = 0
+print loop
+for i in range (0,loop):
+    item_list.append(str(sys.argv[m]+"\t\t"+str(sys.argv[m+1])))
+    total+=int(sys.argv[m+1])
+    m=m+2
+Printer.image("/usr/Shop_chain/logo.png")
+Printer.text("\nInvoice of purchase\nItem Name\tPrice\n")
+Printer.text("---------------------------\n")
+for item in item_list:
+    Printer.text('%s' %item)
+    Printer.text("\n")
+Printer.text("---------------------------\n")
+Printer.text("TOTAL\t\t%d\n" %total)
+Printer.text("============END============\n")
+Printer.barcode('1324354657687','EAN13',64,2,'','')
+Printer.text("Thank you for shopping at \n%s\nVisit again\n" %name)
+Printer.cashdraw(2)
+Printer.cut()
+
+

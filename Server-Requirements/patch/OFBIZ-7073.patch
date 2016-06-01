@@ -1,0 +1,35 @@
+Index: framework/catalina/src/org/ofbiz/catalina/container/CatalinaContainer.java
+===================================================================
+--- framework/catalina/src/org/ofbiz/catalina/container/CatalinaContainer.java	(revision 1744351)
++++ framework/catalina/src/org/ofbiz/catalina/container/CatalinaContainer.java	(working copy)
+@@ -560,7 +560,8 @@
+         JarScanner jarScanner = context.getJarScanner();
+         if (jarScanner instanceof StandardJarScanner) {
+             StandardJarScanner standardJarScanner = (StandardJarScanner) jarScanner;
+-            standardJarScanner.setScanClassPath(false);
++            standardJarScanner.setJarScanFilter(new FilterJars());
++            standardJarScanner.setScanClassPath(true);
+         }
+ 
+         context.setJ2EEApplication(J2EE_APP);
+Index: framework/catalina/src/org/ofbiz/catalina/container/FilterJars.java
+===================================================================
+--- framework/catalina/src/org/ofbiz/catalina/container/FilterJars.java	(revision 0)
++++ framework/catalina/src/org/ofbiz/catalina/container/FilterJars.java	(working copy)
+@@ -0,0 +1,16 @@
++package org.ofbiz.catalina.container;
++
++import org.apache.tomcat.JarScanType; 
++import org.apache.tomcat.JarScanFilter;
++
++final class FilterJars implements JarScanFilter {
++
++    @Override
++    public boolean check(final JarScanType jarScanType, final String jarName) {
++        if (jarName.contains("discoverable")) {
++            return true; 
++        } else {
++            return false;
++        }
++    } 
++}

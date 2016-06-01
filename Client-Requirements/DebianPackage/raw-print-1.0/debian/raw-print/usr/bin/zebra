@@ -1,0 +1,28 @@
+#! /usr/bin/python
+import sys
+from subprocess import call
+
+item_name = sys.argv[1]
+date = sys.argv[2]
+printer = sys.argv[3]
+
+Shop_inf = open('/usr/Shop_chain/Shop_name.txt','r')
+label_format = open('/home/pi/label.raw', 'w')
+
+name = Shop_inf.read()
+name = name.rstrip()
+
+label_format.write("N\n\nI8,A,001\n\nQ1214,24,q812\nOD\nrN\nD7\nZT\nJF\nR32,0\nN\n")
+label_format.write("A100,162,0,4,4,4,N,\"%s\"\n" %name)
+label_format.write("A40,264,0,2,2,2,N,\"Contents\"\n")
+label_format.write("A40,431,0,4,1,1,N,\"Delivery Date :- %s\"\n" %date)
+label_format.write("A40,300,0,2,2,2,N,\"%s\"\n" %item_name)
+label_format.write("B470,300,0,1,2,6,79,B,\"%s\"\n" %item_name)
+label_format.write("B470,431,0,1,2,6,82,B,\"%s\"\n" %date)
+label_format.write("P1\n")
+label_format.close()
+
+call(["lp","-d",printer,"/home/pi/label.raw"])
+call(["rm","/home/pi/label.raw"])
+
+
